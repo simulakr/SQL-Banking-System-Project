@@ -12,7 +12,9 @@ CREATE DATABASE banking_system_project
 USE banking_system_project 
 
 --CREATING TABLES
+
 --1. account_opening_form table
+
 CREATE TABLE account_opening_form(
   [date] date default getdate(),
   AccountType varchar(20) default 'saving',
@@ -26,6 +28,7 @@ CREATE TABLE account_opening_form(
   )
   
 --2. bank table 
+
 CREATE TABLE bank(
   AccountNumber bigint identity(1000000000,1),
   AccountType varchar(20),
@@ -34,6 +37,7 @@ CREATE TABLE bank(
   )
   
 --3. Account_holder_detail table
+
 CREATE TABLE Account_holder_detail(
   AccountNumber bigint identity(1000000000,1),
   Account_HolderName varchar(50),
@@ -44,6 +48,7 @@ CREATE TABLE Account_holder_detail(
   )
   
 --4. TransactionDetail table 
+
 CREATE TABLE TransactionDetail(
   AccountNumber bigint,
   PaymentType varchar(20),
@@ -52,6 +57,7 @@ CREATE TABLE TransactionDetail(
   )
   
 --Data Inserting 
+
 INSERT INTO  account_opening_form(
 AccountType, Account_HolderName, DOB, AadharNumber, MobileNumber, Account_opening_balance, FullAddress)
 VALUES ('saving','kanhaiya','1999-08-24','545854562845','9875645565', 1000, 'patna')
@@ -59,10 +65,12 @@ VALUES ('saving','kanhaiya','1999-08-24','545854562845','9875645565', 1000, 'pat
 SELECT * FROM account_opening_form 
   
 -- Creating Trigger of insert data both of two tables  
+
  CREATE TRIGGER dbo.insertdata 
  on account_opening_form 
  AFTER UPDATE 
  as 
+ 
  		DECLARE @status varchar(20),
  				@AccountType varchar(20),
                 @Account_HolderName varchar(50),
@@ -87,6 +95,7 @@ insert into Account_holder_detail(Account_HolderName,DOB,AadharNumber,MobileNumb
 end 
   
 --Update Status Approved 
+
 UPDATE account_opening_form 
 SET kyc_status = 'Approved' 
 WHERE aadharnumber ='545854562845' 
@@ -95,6 +104,7 @@ SELECT * FROM  account_opening_form
 SELECT * FROM Account_holder_detail
   
 --Checking for Rejected Account Status 
+
 Insert into account_opening_form 
 (accounttype,Account_HolderName, DOB,AadharNumber,MobileNumber,Account_opening_balance,FullAddress)
 values('saving','Ali','1999-08-20','545854562887','9875645545',1000,'Ankara')
@@ -107,6 +117,7 @@ set kyc_status='Rejected'
 WHERE aadharnumber='545854562845'
 
 --Create Trigger on TransactionDetail table for update current balance into main table 
+
 CREATE TRIGGER dbo.insertbalance  
 on TransactionDetail 
 AFTER INSERT 
@@ -132,6 +143,7 @@ WHERE accountnumber = @accountnumber
 END
 
 --Trigger Control 
+
 SELECT * FROM bank --Currentbalance=1000
 SELECT * FROM TransactionDetail
 
@@ -144,10 +156,12 @@ insert into TransactionDetail (AccountNumber,PaymentType,TransactionAmount) valu
 SELECT * FROM bank ---1000+5000-3000=3000 
 
 --Transactions last 1 month
+
 select * from TransactionDetail 
 where DateofTransaction>= dateadd(month,-1,getdate()) and AccountNumber='1000000003'
 
 --A month ago
+
 select dateadd(month,-1,getdate())
 
 
